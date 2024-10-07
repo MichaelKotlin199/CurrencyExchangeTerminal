@@ -5,6 +5,7 @@ import data_classes.MoneyRecord
 import enums.Currency
 import enums.Operation
 import exception.AppException
+import exception.WrongAmountException
 import exception.WrongOperationTypeException
 import service.IConsoleService
 
@@ -75,15 +76,22 @@ object ConsoleCurrencyExchangeServiceImplementation : IConsoleService {
         println("Enter to currency:")
         val currency2 = getCurrency(readln())
         println("Enter amount:")
-        var amount = MoneyRecord()
         val amountString = readln()
-        amount = if ('.' in amountString) {
+
+        val amount = if ('.' in amountString) {
+            val subunits = amountString.substringAfter('.')
+            if (subunits.length > 2) {
+                throw WrongAmountException(amountString)
+            }
             MoneyRecord(
                 amountString.substringBefore('.').toUInt(),
-                amountString.substringAfter('.').toUInt()
+                subunits.toUInt()
             )
-        } else {
+        } else if (amountString.toUIntOrNull() != null) {
             MoneyRecord(amountString.toUInt())
+        }
+        else {
+            throw WrongAmountException(amountString)
         }
 
         if (CurrencyExchangeServiceImplementation.exchangeCurrency(currency1, currency2, amount)) {
