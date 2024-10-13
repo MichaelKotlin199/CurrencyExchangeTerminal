@@ -1,4 +1,4 @@
-package service.implementation
+package service.impl
 
 import data_classes.Funds
 import data_classes.MoneyRecord
@@ -7,9 +7,9 @@ import enums.Operation
 import exception.AppException
 import exception.WrongAmountException
 import exception.WrongOperationTypeException
-import service.IConsoleService
+import service.ConsoleService
 
-object ConsoleCurrencyExchangeServiceImplementation : IConsoleService {
+object ConsoleCurrencyExchangeServiceImpl : ConsoleService {
     private fun getOperation(operationType: String) : Operation {
         return when (operationType) {
             "1" -> Operation.DisplayFunds
@@ -23,7 +23,7 @@ object ConsoleCurrencyExchangeServiceImplementation : IConsoleService {
     private const val SIZE = 30
 
     private fun displayFunds() {
-        val listOfFunds = CurrencyExchangeServiceImplementation.getFunds()
+        val listOfFunds = CurrencyExchangeServiceImpl.getFunds()
         println(" ".repeat(SIZE) + "Your".padEnd(SIZE) + "Service".padEnd(SIZE))
         for ((currency: Currency, funds: Funds) in listOfFunds) {
             print("Currency $currency".padEnd(SIZE))
@@ -34,7 +34,7 @@ object ConsoleCurrencyExchangeServiceImplementation : IConsoleService {
     }
 
     private fun displayExchangeRates() {
-        val listOfExchangeRates = CurrencyExchangeServiceImplementation.exchangeRates
+        val listOfExchangeRates = CurrencyExchangeServiceImpl.exchangeRates
 
         print(" ".repeat(SIZE))
         for (currency: Currency in Currency.entries) {
@@ -94,7 +94,7 @@ object ConsoleCurrencyExchangeServiceImplementation : IConsoleService {
             throw WrongAmountException(amountString)
         }
 
-        if (CurrencyExchangeServiceImplementation.exchangeCurrency(currency1, currency2, amount)) {
+        if (CurrencyExchangeServiceImpl.exchangeCurrency(currency1, currency2, amount)) {
             println("Exchange was successful")
         }
     }

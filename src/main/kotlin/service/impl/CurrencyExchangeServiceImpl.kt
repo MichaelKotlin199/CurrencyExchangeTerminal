@@ -1,13 +1,13 @@
-package service.implementation
+package service.impl
 
 import data_classes.Fraction
 import data_classes.Funds
 import data_classes.MoneyRecord
 import enums.Currency
-import service.ICurrencyExchangeService
+import service.CurrencyExchangeService
 
-object CurrencyExchangeServiceImplementation : ICurrencyExchangeService {
-    private var funds = mutableMapOf<Currency, Funds>(
+object CurrencyExchangeServiceImpl : CurrencyExchangeService {
+    private var funds = mutableMapOf(
         Currency.RUB to Funds(MoneyRecord(1000000u), MoneyRecord(10000u)),
         Currency.USD to Funds(MoneyRecord(), MoneyRecord(1000u)),
         Currency.EUR to Funds(MoneyRecord(), MoneyRecord(1000u)),
@@ -44,9 +44,9 @@ object CurrencyExchangeServiceImplementation : ICurrencyExchangeService {
 
     override fun exchangeCurrency(fromCurrency: Currency, toCurrency: Currency, amount: MoneyRecord) : Boolean {
         if (
-            fromCurrency !in CurrencyExchangeServiceImplementation.exchangeRates
+            fromCurrency !in exchangeRates
             ||
-            toCurrency !in CurrencyExchangeServiceImplementation.exchangeRates[fromCurrency]!!
+            toCurrency !in exchangeRates[fromCurrency]!!
             ) {
             println("non-existent currency exchange $fromCurrency to $toCurrency")
             return false

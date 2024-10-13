@@ -1,5 +1,5 @@
-import service.implementation.ConsoleCurrencyExchangeServiceImplementation
+import service.impl.ConsoleCurrencyExchangeServiceImpl
 
 fun main() {
-    ConsoleCurrencyExchangeServiceImplementation.work()
+    ConsoleCurrencyExchangeServiceImpl.work()
 }

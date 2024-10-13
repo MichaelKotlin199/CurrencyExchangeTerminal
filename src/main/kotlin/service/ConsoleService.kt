@@ -1,5 +1,5 @@
 package service
 
-interface IConsoleService {
+interface ConsoleService {
     fun work()
 }
