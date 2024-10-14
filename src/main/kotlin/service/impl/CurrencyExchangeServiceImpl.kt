@@ -43,26 +43,33 @@ object CurrencyExchangeServiceImpl : CurrencyExchangeService {
     }
 
     override fun exchangeCurrency(fromCurrency: Currency, toCurrency: Currency, amount: MoneyRecord) : Boolean {
-        if (
-            fromCurrency !in exchangeRates
-            ||
-            toCurrency !in exchangeRates[fromCurrency]!!
-            ) {
-            println("non-existent currency exchange $fromCurrency to $toCurrency")
+        val fromExchangeRates = exchangeRates[fromCurrency] ?: run {
+            println("Non-existent currency: $fromCurrency")
             return false
         }
-        if (funds[fromCurrency]!!.userHas < amount) {
-            println("you don't have that much money")
+        val coefficient = fromExchangeRates[toCurrency] ?: run {
+            println("Non-existent exchange rate from $fromCurrency to $toCurrency")
+            return false
+        }
+        val fromFunds = funds[fromCurrency] ?: run {
+            println("Funds for $fromCurrency do not exist")
+            return false
+        }
+        val toFunds = funds[toCurrency] ?: run {
+            println("Funds for $toCurrency do not exist")
+            return false
+        }
+        if (fromFunds.userHas < amount) {
+            println("You don't have that much money")
             return false
         }
 
-        funds[fromCurrency]!!.userHas -= amount
-        funds[fromCurrency]!!.serviceHas += amount
-        val coefficient = exchangeRates[fromCurrency]!![toCurrency]
-        val subCount = (amount.numberOfBasicUnits * 100u + amount.numberOfSubunits) * coefficient!!.numerator.toUInt() / coefficient.denominator
+        fromFunds.userHas -= amount
+        fromFunds.serviceHas += amount
+        val subCount = (amount.numberOfBasicUnits * 100u + amount.numberOfSubunits) * coefficient.numerator.toUInt() / coefficient.denominator
         val newRecord = MoneyRecord(subCount / 100u, subCount % 100u)
-        funds[toCurrency]!!.userHas += newRecord
-        funds[toCurrency]!!.serviceHas -= newRecord
+        toFunds.userHas += newRecord
+        toFunds.serviceHas -= newRecord
         return true
     }
 }
